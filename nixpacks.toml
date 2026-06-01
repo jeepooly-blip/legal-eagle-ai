@@ -1,0 +1,16 @@
+# Nixpacks configuration for Railway (and any other Nixpacks-based host).
+# Tells the build image to: install Python deps, then install THIS project as
+# an editable package so `import legal_eagle` works in the running container.
+
+[phases.setup]
+nixPkgs = ["python311"]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip",
+  "pip install -r requirements.txt",
+  "pip install -e .",
+]
+
+[start]
+cmd = "uvicorn legal_eagle.api.main:app --host 0.0.0.0 --port $PORT"
