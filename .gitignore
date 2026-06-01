@@ -52,6 +52,7 @@ desktop.ini
 node_modules/
 .next/
 .vercel/
+.netlify/
 out/
 dist/
 build/
