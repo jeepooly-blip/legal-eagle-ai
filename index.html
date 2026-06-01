@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal Eagle AI - Cross-Jurisdictional Legal Research</title>
+  <meta name="description" content="Multi-agent legal research platform: parallel US CourtListener + EU EUR-Lex queries with EuroVoc semantic bridging, cross-jurisdictional synthesis, and citation verification." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%96%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">&#9876;</span>
+      <div>
+        <h1>Legal Eagle AI</h1>
+        <p class="tagline">Multi-agent cross-jurisdictional legal research</p>
+      </div>
+    </div>
+    <div class="status">
+      <span id="backend-status" class="status-dot status-unknown" title="Backend health"></span>
+      <span id="backend-label" class="status-text">checking&hellip;</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2>Compare US &amp; EU law in one query</h2>
+      <p class="lead">
+        Parallel CourtListener (US) and EUR-Lex + EuroVoc (EU) research, with semantic bridging
+        between American legal concepts and the European taxonomy, full provenance, and citation
+        verification.
+      </p>
+    </section>
+
+    <section class="query-card">
+      <form id="research-form" autocomplete="off">
+        <label for="query">Research question</label>
+        <textarea
+          id="query"
+          name="query"
+          rows="3"
+          placeholder="e.g. Compare US Fourth Amendment search-and-seizure doctrine with EU GDPR data-protection enforcement on employee monitoring."
+          required
+        ></textarea>
+        <div class="examples">
+          <span class="examples-label">Try:</span>
+          <button type="button" class="example" data-q="Compare US Fourth Amendment with EU GDPR for employee monitoring">Fourth Amendment vs GDPR</button>
+          <button type="button" class="example" data-q="What is the EU AI Act's risk classification and how does it compare to US sectoral AI regulation?">EU AI Act vs US AI</button>
+          <button type="button" class="example" data-q="Cross-border data transfer under EU SCCs and US Executive Order 12333">Data transfers: SCCs vs EO 12333</button>
+        </div>
+        <div class="actions">
+          <button id="run-btn" type="submit" class="primary">
+            <span class="btn-label">Run research</span>
+            <span class="btn-spinner" hidden>&#9696;</span>
+          </button>
+          <span id="timer" class="timer" hidden>0.0s</span>
+        </div>
+      </form>
+    </section>
+
+    <section id="progress" class="progress" hidden>
+      <h3>Pipeline progress</h3>
+      <ol id="steps" class="steps">
+        <li data-step="orchestrator" class="step pending"><span class="dot"></span> Orchestrator (decompose + EuroVoc suggest)</li>
+        <li data-step="us" class="step pending"><span class="dot"></span> US retriever (CourtListener)</li>
+        <li data-step="eu" class="step pending"><span class="dot"></span> EU retriever (EUR-Lex + EuroVoc)</li>
+        <li data-step="summarizer" class="step pending"><span class="dot"></span> Summarizer</li>
+        <li data-step="synthesis" class="step pending"><span class="dot"></span> Synthesis (with EuroVoc bridge + hierarchy)</li>
+        <li data-step="verification" class="step pending"><span class="dot"></span> Verification</li>
+      </ol>
+      <pre id="log" class="log" aria-live="polite"></pre>
+    </section>
+
+    <section id="error" class="error-card" hidden>
+      <h3>Error</h3>
+      <pre id="error-text"></pre>
+    </section>
+
+    <section id="report" class="report" hidden>
+      <div class="report-head">
+        <h2>Research report</h2>
+        <div class="report-meta">
+          <span class="chip" id="session-chip">session: -</span>
+          <span class="chip" id="docs-chip">docs: -</span>
+          <span class="chip" id="verify-chip">verified: -</span>
+        </div>
+      </div>
+
+      <p class="report-query" id="report-query"></p>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="us" role="tab">US Documents</button>
+        <button class="tab" data-tab="eu" role="tab">EU Documents</button>
+        <button class="tab" data-tab="us-summary" role="tab">US Summary</button>
+        <button class="tab" data-tab="eu-summary" role="tab">EU Summary</button>
+        <button class="tab" data-tab="synthesis" role="tab">Synthesis</button>
+        <button class="tab" data-tab="eurovoc" role="tab">EuroVoc Bridge</button>
+        <button class="tab" data-tab="verify" role="tab">Verification</button>
+        <button class="tab" data-tab="raw" role="tab">Raw JSON</button>
+      </nav>
+
+      <div class="tab-panels">
+        <div class="tab-panel active" data-panel="us"><div id="panel-us" class="cards"></div></div>
+        <div class="tab-panel" data-panel="eu"><div id="panel-eu" class="cards"></div></div>
+        <div class="tab-panel" data-panel="us-summary"><div id="panel-us-summary"></div></div>
+        <div class="tab-panel" data-panel="eu-summary"><div id="panel-eu-summary"></div></div>
+        <div class="tab-panel" data-panel="synthesis"><div id="panel-synthesis"></div></div>
+        <div class="tab-panel" data-panel="eurovoc"><div id="panel-eurovoc"></div></div>
+        <div class="tab-panel" data-panel="verify"><div id="panel-verify"></div></div>
+        <div class="tab-panel" data-panel="raw"><pre id="panel-raw" class="raw"></pre></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Legal Eagle AI &middot; v0.1.0 &middot; v1.1 EuroVoc enhanced</span>
+    <span><a href="/docs" target="_blank" rel="noopener">API docs</a> &middot; <a href="https://github.com" id="gh-link" target="_blank" rel="noopener">GitHub</a></span>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

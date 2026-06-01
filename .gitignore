@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+
+# Test / lint caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+.cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+server.log
+server.err.log
+
+# OS
+.DS_Store
+desktop.ini
+
+# Build / deploy artifacts
+node_modules/
+.next/
+.vercel/
+out/
+dist/
+build/
+
+# Project-specific debug files (used during local development)
+copy_files.ps1
+copy_to_onedrive.bat
+copy_v11.bat
+copy_v11.ps1
+list_dst.ps1
+start_server.bat
+start_server.ps1
+_path_test.py
+__path_test.txt
+
+# Reports / coverage
+*.xml
+coverage.json
