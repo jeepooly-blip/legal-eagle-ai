@@ -23,9 +23,8 @@ RUN pip install --no-cache-dir -e .
 # Copy the rest of the source (tests etc. — kept small; not run in the container)
 COPY . .
 
-# Railway/Heroku-style: $PORT is set by the platform
-ENV PORT=8000
+# Railway injects $PORT at runtime. Do NOT hardcode PORT in ENV — that
+# shadows the platform-injected value and causes the healthcheck to fail.
+# Use shell-form CMD so $PORT is expanded at runtime, with a sane default.
 EXPOSE 8000
-
-# Use shell form so $PORT is expanded at runtime
-CMD uvicorn legal_eagle.api.main:app --host 0.0.0.0 --port $PORT
+CMD ["sh", "-c", "exec uvicorn legal_eagle.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --log-level info"]
