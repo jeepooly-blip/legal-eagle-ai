@@ -27,4 +27,5 @@ COPY . .
 ENV PORT=8000
 EXPOSE 8000
 
-CMD ["uvicorn", "legal_eagle.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use shell form so $PORT is expanded at runtime
+CMD uvicorn legal_eagle.api.main:app --host 0.0.0.0 --port $PORT
